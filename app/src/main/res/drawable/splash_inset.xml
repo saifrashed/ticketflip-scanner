@@ -1,0 +1,6 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/icon_white"
+    android:insetLeft="100dp"
+    android:insetRight="100dp"
+    android:insetTop="100dp"
+    android:insetBottom="100dp"/>
