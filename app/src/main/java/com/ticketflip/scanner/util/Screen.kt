@@ -9,12 +9,12 @@ sealed class Screen(val route: String) {
     object AccessScreen : Screen("access")
     object AccessScanScreen : Screen("access-scan")
 
-    // top level screens
-    object EventScreen : Screen("events")
-    object ProfileScreen : Screen("profile")
+    // event screens
+    object EventScreen : Screen("event")
+    object EventScanScreen : Screen("event-scan")
 
-    // scanning screens
-    object ScanScreen : Screen("scan-screen")
+    // Profile
+    object ProfileScreen : Screen("profile")
 
 
     // append arguments to route

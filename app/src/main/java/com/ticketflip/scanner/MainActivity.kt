@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -137,6 +136,17 @@ private fun NavHost(
             )
         }
 
+
+        // Event Scan screen
+        composable(Screen.EventScanScreen.route + "/{eventId}") { navBackStackEntry ->
+            /* Extracting the id from the route */
+            val eventId = navBackStackEntry.arguments?.getString("eventId")
+            /* We check if is null */
+            eventId?.let {
+
+            }
+        }
+
         // Profile screen
         composable(Screen.ProfileScreen.route) {
             Scaffold(
@@ -152,27 +162,6 @@ private fun NavHost(
                     }
                 }
             )
-        }
-
-        // Profile screen
-        composable(Screen.ScanScreen.route) {
-            Scaffold(
-                scaffoldState = scaffoldState,
-                content = {
-                    /* TOOD */
-                }
-            )
-        }
-
-
-        //Read Datapod screen
-        composable(Screen.ScanScreen.route + "/{eventId}") { navBackStackEntry ->
-            /* Extracting the id from the route */
-            val eventId = navBackStackEntry.arguments?.getString("eventId")
-            /* We check if is null */
-            eventId?.let {
-
-            }
         }
 
 
