@@ -29,6 +29,7 @@ import com.hva.amsix.util.Constants.EVENTS_ITEM
 import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.access.AccessScanScreen
 import com.ticketflip.scanner.ui.app.access.AccessScreen
 import com.ticketflip.scanner.ui.theme.TicketflipscannerTheme
 import kotlinx.coroutines.launch
@@ -110,11 +111,11 @@ private fun NavHost(
         }
 
         // Scan Access screen
-        composable(Screen.ScanAccessScreen.route) {
+        composable(Screen.AccessScanScreen.route) {
             Scaffold(
                 scaffoldState = scaffoldState,
                 content = {
-                    /* TOOD */
+                    AccessScanScreen(UIViewModel)
                 }
             )
         }

@@ -6,7 +6,8 @@ package com.hva.amsix.util
 sealed class Screen(val route: String) {
 
     // auth screens
-    object AccessScreen : Screen("main")
+    object AccessScreen : Screen("access")
+    object AccessScanScreen : Screen("access-scan")
 
     // top level screens
     object EventScreen : Screen("events")
@@ -14,7 +15,6 @@ sealed class Screen(val route: String) {
 
     // scanning screens
     object ScanScreen : Screen("scan-screen")
-    object ScanAccessScreen : Screen("scan-access-screen")
 
 
     // append arguments to route

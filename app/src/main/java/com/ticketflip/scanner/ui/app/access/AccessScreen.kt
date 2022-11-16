@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.R
 import com.ticketflip.scanner.ui.UIViewModel
 
@@ -30,11 +31,14 @@ fun AccessScreen(UIViewModel: UIViewModel) {
         Image(
             painter = painterResource(id = R.drawable.ticketflip_logo),
             contentDescription = "",
-            Modifier.width(300.dp)
+            Modifier
+                .width(300.dp)
+                .padding(25.dp, 50.dp)
         )
 
         Button(
             onClick = {
+                UIViewModel.navigate(Screen.AccessScanScreen.route)
             },
             shape = RoundedCornerShape(50.dp),
             modifier = Modifier
