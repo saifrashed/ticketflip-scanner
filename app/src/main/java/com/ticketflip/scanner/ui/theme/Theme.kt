@@ -10,9 +10,9 @@ import androidx.compose.ui.platform.LocalView
 
 
 private val colorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Orange,
+    secondary = Grey,
+    background = LightGray
 )
 
 @Composable
@@ -20,14 +20,6 @@ fun TicketflipscannerTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = colorScheme;
-
-    val view = LocalView.current
-
-    if (!view.isInEditMode) {
-        SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.primary.toArgb()
-        }
-    }
 
     MaterialTheme(
         colorScheme = colorScheme,
