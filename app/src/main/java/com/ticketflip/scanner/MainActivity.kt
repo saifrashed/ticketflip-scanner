@@ -3,22 +3,30 @@ package com.ticketflip.scanner
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.hva.amsix.util.Constants.EVENTS_ITEM
+import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.theme.TicketflipscannerTheme
@@ -38,13 +46,8 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    TicketflipScannerApp()
-                }
+                TicketflipScannerApp()
+
             }
         }
     }
@@ -90,7 +93,7 @@ private fun NavHost(
 
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = Screen.ScanAccessScreen.route,
+        startDestination = Screen.EventScreen.route,
 
         ) {
 
@@ -109,7 +112,14 @@ private fun NavHost(
             Scaffold(
                 scaffoldState = scaffoldState,
                 content = {
-                    /* TOOD */
+                    AppShell(
+                        title = "Evenementen",
+                        UIViewModel = UIViewModel,
+                        scaffoldState = scaffoldState,
+                        showGoBack = false
+                    ) {
+                        Text(text = "hoi")
+                    }
                 }
             )
         }
@@ -119,13 +129,20 @@ private fun NavHost(
             Scaffold(
                 scaffoldState = scaffoldState,
                 content = {
-                    /* TOOD */
+                    AppShell(
+                        title = "Profiel",
+                        UIViewModel = UIViewModel,
+                        scaffoldState = scaffoldState,
+                        showGoBack = true
+                    ) {
+                        Text(text = "hoi")
+                    }
                 }
             )
         }
 
         // Profile screen
-        composable(Screen.ProfileScreen.route) {
+        composable(Screen.ScanScreen.route) {
             Scaffold(
                 scaffoldState = scaffoldState,
                 content = {
@@ -135,21 +152,100 @@ private fun NavHost(
         }
 
 
-//        //Read Datapod screen
-//        composable(Screen.ReadDatapodScreen.route + "/{datapodId}") { navBackStackEntry ->
-//            /* Extracting the id from the route */
-//            val datapodId = navBackStackEntry.arguments?.getString("datapodId")
-//            /* We check if is null */
-//            datapodId?.let {
-//                AppShellDatapodRead("Datapod", UIViewModel, scaffoldState) {
-//                    ReadDatapodScreen(datapodId = datapodId)
-//                }
-//            }
-//
-//        }
+        //Read Datapod screen
+        composable(Screen.ScanScreen.route + "/{eventId}") { navBackStackEntry ->
+            /* Extracting the id from the route */
+            val eventId = navBackStackEntry.arguments?.getString("eventId")
+            /* We check if is null */
+            eventId?.let {
+
+            }
+        }
 
 
         // the rest...
     }
 
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun AppShell(
+    title: String,
+    UIViewModel: UIViewModel,
+    scaffoldState: ScaffoldState,
+    showGoBack: Boolean,
+    content: @Composable() () -> Unit
+) {
+
+    Scaffold(
+        backgroundColor = MaterialTheme.colorScheme.background,
+        scaffoldState = scaffoldState,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    if (showGoBack) {
+                        IconButton(onClick = { UIViewModel.goBack(true) }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Go Back"
+                            )
+                        }
+                    }
+                },
+                modifier = Modifier.background(Color.White)
+            )
+        },
+
+        bottomBar = {
+            NavigationBar(modifier = Modifier.fillMaxWidth(), containerColor = Color.White) {
+                NavigationBarItem(
+                    label = { Text("Home") },
+                    selected = UIViewModel.bottomNavIndex.collectAsState().value == EVENTS_ITEM,
+                    onClick = {
+                        UIViewModel.clickBottomNavItem(EVENTS_ITEM)
+                        UIViewModel.navigate(Screen.EventScreen.route)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = "Events"
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = Color(0x80FFEDCF)
+                    )
+                )
+                NavigationBarItem(
+                    label = { Text("Settings") },
+                    selected = UIViewModel.bottomNavIndex.collectAsState().value == PROFILE_ITEM,
+                    onClick = {
+                        UIViewModel.clickBottomNavItem(PROFILE_ITEM)
+                        UIViewModel.navigate(Screen.ProfileScreen.route)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "Profile"
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = Color(0x80FFEDCF)
+                    )
+                )
+            }
+        }
+    ) { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) { content() } }
 }
