@@ -29,6 +29,7 @@ import com.hva.amsix.util.Constants.EVENTS_ITEM
 import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.access.AccessScreen
 import com.ticketflip.scanner.ui.theme.TicketflipscannerTheme
 import kotlinx.coroutines.launch
 
@@ -93,11 +94,22 @@ private fun NavHost(
 
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = Screen.EventScreen.route,
+        startDestination = Screen.AccessScreen.route,
 
         ) {
 
+
         // Access screen
+        composable(Screen.AccessScreen.route) {
+            Scaffold(
+                scaffoldState = scaffoldState,
+                content = {
+                    AccessScreen(UIViewModel)
+                }
+            )
+        }
+
+        // Scan Access screen
         composable(Screen.ScanAccessScreen.route) {
             Scaffold(
                 scaffoldState = scaffoldState,
@@ -201,7 +213,10 @@ fun AppShell(
                         }
                     }
                 },
-                modifier = Modifier.background(Color.White)
+                modifier = Modifier.background(Color.White),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White
+                )
             )
         },
 
