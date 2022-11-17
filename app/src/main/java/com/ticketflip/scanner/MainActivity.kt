@@ -32,6 +32,7 @@ import com.ticketflip.scanner.ui.app.access.AccessScanScreen
 import com.ticketflip.scanner.ui.app.access.AccessScreen
 import com.ticketflip.scanner.ui.app.event.EventScanScreen
 import com.ticketflip.scanner.ui.app.event.EventScreen
+import com.ticketflip.scanner.ui.app.profile.ProfileScreen
 import com.ticketflip.scanner.ui.theme.TicketflipscannerTheme
 import kotlinx.coroutines.launch
 
@@ -59,7 +60,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TicketflipScannerApp(UIViewModel: UIViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val navController = rememberNavController()
-
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -138,7 +138,6 @@ private fun NavHost(
             )
         }
 
-
         // Event Scan screen
         composable(Screen.EventScanScreen.route + "/{eventId}") { navBackStackEntry ->
             /* Extracting the id from the route */
@@ -160,7 +159,7 @@ private fun NavHost(
                         scaffoldState = scaffoldState,
                         showGoBack = true
                     ) {
-                        Text(text = "hoi")
+                        ProfileScreen(UIViewModel = UIViewModel)
                     }
                 }
             )
