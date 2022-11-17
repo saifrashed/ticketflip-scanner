@@ -30,6 +30,8 @@ import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.access.AccessScanScreen
 import com.ticketflip.scanner.ui.app.access.AccessScreen
+import com.ticketflip.scanner.ui.app.event.EventScanScreen
+import com.ticketflip.scanner.ui.app.event.EventScreen
 import com.ticketflip.scanner.ui.theme.TicketflipscannerTheme
 import kotlinx.coroutines.launch
 
@@ -94,7 +96,7 @@ private fun NavHost(
 
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = Screen.AccessScreen.route,
+        startDestination = Screen.EventScreen.route,
 
         ) {
 
@@ -130,7 +132,7 @@ private fun NavHost(
                         scaffoldState = scaffoldState,
                         showGoBack = false
                     ) {
-                        Text(text = "hoi")
+                        EventScreen(UIViewModel = UIViewModel)
                     }
                 }
             )
@@ -143,7 +145,7 @@ private fun NavHost(
             val eventId = navBackStackEntry.arguments?.getString("eventId")
             /* We check if is null */
             eventId?.let {
-
+                EventScanScreen(UIViewModel = UIViewModel, eventId = eventId)
             }
         }
 
@@ -213,7 +215,7 @@ fun AppShell(
         bottomBar = {
             NavigationBar(modifier = Modifier.fillMaxWidth(), containerColor = Color.White) {
                 NavigationBarItem(
-                    label = { Text("Home") },
+                    label = { Text("Evenementen") },
                     selected = UIViewModel.bottomNavIndex.collectAsState().value == EVENTS_ITEM,
                     onClick = {
                         UIViewModel.clickBottomNavItem(EVENTS_ITEM)
@@ -222,7 +224,7 @@ fun AppShell(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Home,
-                            contentDescription = "Events"
+                            contentDescription = "Evenementen"
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
@@ -232,7 +234,7 @@ fun AppShell(
                     )
                 )
                 NavigationBarItem(
-                    label = { Text("Settings") },
+                    label = { Text("Profiel") },
                     selected = UIViewModel.bottomNavIndex.collectAsState().value == PROFILE_ITEM,
                     onClick = {
                         UIViewModel.clickBottomNavItem(PROFILE_ITEM)
@@ -241,7 +243,7 @@ fun AppShell(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = "Profile"
+                            contentDescription = "Profiel"
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
