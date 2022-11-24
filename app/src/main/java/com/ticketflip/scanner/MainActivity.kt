@@ -96,10 +96,9 @@ private fun NavHost(
 
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = Screen.EventScreen.route,
+        startDestination = Screen.AccessScreen.route,
 
         ) {
-
 
         // Access screen
         composable(Screen.AccessScreen.route) {
@@ -113,29 +112,24 @@ private fun NavHost(
 
         // Scan Access screen
         composable(Screen.AccessScanScreen.route) {
-            Scaffold(
+            AppShellScanner(
+                UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
-                content = {
-                    AccessScanScreen(UIViewModel)
-                }
-            )
+            ) {
+                AccessScanScreen(UIViewModel)
+            }
         }
 
         // Event screen
         composable(Screen.EventScreen.route) {
-            Scaffold(
+            AppShell(
+                title = "Evenementen",
+                UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
-                content = {
-                    AppShell(
-                        title = "Evenementen",
-                        UIViewModel = UIViewModel,
-                        scaffoldState = scaffoldState,
-                        showGoBack = false
-                    ) {
-                        EventScreen(UIViewModel = UIViewModel)
-                    }
-                }
-            )
+                showGoBack = false
+            ) {
+                EventScreen(UIViewModel = UIViewModel)
+            }
         }
 
         // Event Scan screen
@@ -144,25 +138,25 @@ private fun NavHost(
             val eventId = navBackStackEntry.arguments?.getString("eventId")
             /* We check if is null */
             eventId?.let {
-                EventScanScreen(UIViewModel = UIViewModel, eventId = eventId)
+                AppShellScanner(
+                    UIViewModel = UIViewModel,
+                    scaffoldState = scaffoldState,
+                ) {
+                    EventScanScreen(UIViewModel = UIViewModel, eventId = eventId)
+                }
             }
         }
 
         // Profile screen
         composable(Screen.ProfileScreen.route) {
-            Scaffold(
+            AppShell(
+                title = "Profiel",
+                UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
-                content = {
-                    AppShell(
-                        title = "Profiel",
-                        UIViewModel = UIViewModel,
-                        scaffoldState = scaffoldState,
-                        showGoBack = true
-                    ) {
-                        ProfileScreen(UIViewModel = UIViewModel)
-                    }
-                }
-            )
+                showGoBack = false
+            ) {
+                ProfileScreen(UIViewModel = UIViewModel)
+            }
         }
 
 
@@ -253,5 +247,39 @@ fun AppShell(
                 )
             }
         }
+    ) { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) { content() } }
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun AppShellScanner(
+    UIViewModel: UIViewModel,
+    scaffoldState: ScaffoldState,
+    content: @Composable() () -> Unit
+) {
+
+    Scaffold(
+        backgroundColor = MaterialTheme.colorScheme.background,
+        scaffoldState = scaffoldState,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+
+                },
+                navigationIcon = {
+                    IconButton(onClick = { UIViewModel.goBack(true) }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Go Back"
+                        )
+                    }
+                },
+                modifier = Modifier.background(Color.White),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White
+                )
+            )
+        },
     ) { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) { content() } }
 }

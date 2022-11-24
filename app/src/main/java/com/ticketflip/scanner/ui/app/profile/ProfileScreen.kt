@@ -2,7 +2,9 @@ package com.ticketflip.scanner.ui.app.profile
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -37,7 +40,8 @@ fun ProfileScreen(UIViewModel: UIViewModel) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .height(150.dp)
-                .width(150.dp).clip(CircleShape)
+                .width(150.dp)
+                .clip(CircleShape)
         )
         Text(
             text = "Saif Rashed",
@@ -48,6 +52,19 @@ fun ProfileScreen(UIViewModel: UIViewModel) {
         Text(
             text = "saifeddinerashed@icloud.com",
         )
+
+        Button(
+            onClick = {
+                UIViewModel.navigate(Screen.AccessScreen.route)
+            },
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .padding(0.dp, 25.dp)
+                .height(50.dp)
+                .width(200.dp)
+        ) {
+            Text(text = "Uitloggen")
+        }
     }
 }
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -107,7 +108,7 @@ fun EventScreen(UIViewModel: UIViewModel) {
                             horizontalArrangement = Arrangement.End
                         ) {
                             Button(
-                                onClick = {/*TODO*/ },
+                                onClick = { UIViewModel.navigate(Screen.EventScanScreen.withArgs("23")) },
                                 shape = RoundedCornerShape(50.dp),
                                 modifier = Modifier
                                     .height(50.dp)
