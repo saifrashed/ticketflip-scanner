@@ -2,16 +2,18 @@ package com.ticketflip.scanner.ui.app.event
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,97 +26,122 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun EventScreen(UIViewModel: UIViewModel) {
+fun EventScreen(
+    UIViewModel: UIViewModel,
+    userViewModel: UserViewModel,
+    eventViewModel: EventViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+) {
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
-            Card(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                onClick = { /* TODO */ }
+    val eventList by eventViewModel.eventResource.observeAsState()
+
+    LaunchedEffect(key1 = true) {
+        userViewModel.token?.let { eventViewModel.getEvents(it) }
+    }
+
+    LazyColumn {
+        items(eventList?.data?.size ?: 0) { index ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                Card(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    onClick = { /* TODO */ }
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
                     ) {
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 0.dp, vertical = 4.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Datapod",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "0 members",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        IconButton(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(Color.White)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "Favorite",
-                            )
-                        }
-                    }
-
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .memoryCachePolicy(CachePolicy.ENABLED)
-                            .data("https://www.ticketflip.nl/img/find-order-bg.jpg")
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                    )
-
-                    Column(modifier = Modifier.padding(20.dp)) {
-
-                        Text(
-                            text = "Beschrijving",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                        )
-
-                        Text(
-                            text = "tekst",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
                         ) {
-                            Button(
-                                onClick = { UIViewModel.navigate(Screen.EventScanScreen.withArgs("23")) },
-                                shape = RoundedCornerShape(50.dp),
+
+                            Column(
                                 modifier = Modifier
-                                    .height(50.dp)
-                                    .width(125.dp)
+                                    .weight(1f)
+                                    .padding(horizontal = 0.dp, vertical = 4.dp),
+                                verticalArrangement = Arrangement.Center
                             ) {
-                                Text(text = "Scannen")
+                                eventList?.data?.get(index)?.let {
+                                    Text(
+                                        text = it.eventName,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                                Text(
+                                    text = "0 members",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            IconButton(
+                                onClick = { /*TODO*/ },
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color.White)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = "Favorite",
+                                )
+                            }
+                        }
+
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .data(eventList?.data?.get(index)?.eventImage ?: "")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp)
+                        )
+
+                        Column(modifier = Modifier.padding(20.dp)) {
+
+                            Text(
+                                text = "Beschrijving",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                            )
+
+                            Text(
+                                text =  eventList?.data?.get(index)?.eventDescription ?: "",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Button(
+                                    onClick = {
+                                        eventList?.data?.get(index)?.let {
+                                            Screen.EventScanScreen.withArgs(
+                                                it.eventId
+                                            )
+                                        }?.let {
+                                            UIViewModel.navigate(
+                                                it
+                                            )
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(50.dp),
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .width(125.dp)
+                                ) {
+                                    Text(text = "Scannen")
+                                }
                             }
                         }
                     }

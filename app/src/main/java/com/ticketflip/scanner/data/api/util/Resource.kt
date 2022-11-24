@@ -1,4 +1,4 @@
-package com.hva.amsix.data.api.util
+package  com.ticketflip.scanner.data.api.util
 
 /**
  * You can consider a sealed class as an enum++

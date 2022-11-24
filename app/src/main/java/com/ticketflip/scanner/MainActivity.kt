@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +28,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hva.amsix.util.Constants.EVENTS_ITEM
 import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
+import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.UserViewModel
 import com.ticketflip.scanner.ui.app.access.AccessScanScreen
 import com.ticketflip.scanner.ui.app.access.AccessScreen
 import com.ticketflip.scanner.ui.app.event.EventScanScreen
@@ -91,8 +94,9 @@ fun TicketflipScannerApp(UIViewModel: UIViewModel = androidx.lifecycle.viewmodel
 private fun NavHost(
     navController: NavHostController,
     UIViewModel: UIViewModel,
-    scaffoldState: ScaffoldState
-) {
+    scaffoldState: ScaffoldState,
+    userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    ) {
 
     androidx.navigation.compose.NavHost(
         navController,
@@ -116,7 +120,7 @@ private fun NavHost(
                 UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
             ) {
-                AccessScanScreen(UIViewModel)
+                AccessScanScreen(UIViewModel, userViewModel)
             }
         }
 
@@ -128,7 +132,7 @@ private fun NavHost(
                 scaffoldState = scaffoldState,
                 showGoBack = false
             ) {
-                EventScreen(UIViewModel = UIViewModel)
+                EventScreen(UIViewModel = UIViewModel, userViewModel)
             }
         }
 
@@ -155,12 +159,18 @@ private fun NavHost(
                 scaffoldState = scaffoldState,
                 showGoBack = false
             ) {
-                ProfileScreen(UIViewModel = UIViewModel)
+                ProfileScreen(UIViewModel = UIViewModel, userViewModel)
             }
         }
-
-
         // the rest...
+    }
+
+    val user by userViewModel.userResource.observeAsState()
+
+    when(user) {
+        is Resource.Success -> {
+            navController.navigate(Screen.EventScreen.route)
+        }
     }
 
 }

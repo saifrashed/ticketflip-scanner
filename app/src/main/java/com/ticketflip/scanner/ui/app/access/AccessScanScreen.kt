@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,7 +23,10 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.common.util.concurrent.ListenableFuture
+import com.hva.amsix.util.Screen
+import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.UserViewModel
 import com.ticketflip.scanner.util.BarCodeAnalyser
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,7 +36,7 @@ import java.util.concurrent.Executors
     ExperimentalPermissionsApi::class
 )
 @Composable
-fun AccessScanScreen(UIViewModel: UIViewModel) {
+fun AccessScanScreen(UIViewModel: UIViewModel, userViewModel: UserViewModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -40,20 +44,40 @@ fun AccessScanScreen(UIViewModel: UIViewModel) {
         val cameraPermissionState =
             rememberPermissionState(permission = Manifest.permission.CAMERA)
 
+        val userResult by userViewModel.userResource.observeAsState()
+
 
         LaunchedEffect(key1 = true) {
             cameraPermissionState.launchPermissionRequest()
+
+            userViewModel.getUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjZhNzU2ZGRmY2FkNDVmNTMyYjJjNiIsImlhdCI6MTY2OTI5MjYyOH0.Tx2e-iS4aRuQ4L0pQpZmhUxT6eHIzNR83Zb3UcNGOls")
+
+        }
+
+        when (userResult) {
+            is Resource.Success -> { // if login is successful we redirect the user to MAIN screen.
+                LaunchedEffect(key1 = true) {
+                    UIViewModel.navigate(Screen.EventScreen.route)
+                    UIViewModel.showSnackbar("Login gelukt!")
+                }
+            }
+
+            is Resource.Error -> { // if login is unsuccessful we redirect the user to LOGIN screen.
+                LaunchedEffect(key1 = true) {
+                    UIViewModel.showSnackbar("Gebruiker bestaat niet")
+                }
+            }
         }
 
 
-        CameraPreview()
+        CameraPreview(userViewModel)
 
     }
 }
 
 
 @Composable
-fun CameraPreview() {
+fun CameraPreview(userViewModel: UserViewModel) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
@@ -91,6 +115,8 @@ fun CameraPreview() {
                         barcode.rawValue?.let { barcodeValue ->
                             barCodeVal.value = barcodeValue
                             Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+
+                            userViewModel.getUser(barcodeValue)
                         }
                     }
                 }

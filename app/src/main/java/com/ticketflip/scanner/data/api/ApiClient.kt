@@ -1,8 +1,8 @@
-package com.hva.amsix.data.api
+package com.ticketflip.scanner.data.api
 
 import android.content.Context
-import com.hva.amsix.data.api.util.AuthInterceptor
 import com.hva.amsix.util.Constants
+import com.ticketflip.scanner.data.util.AuthInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

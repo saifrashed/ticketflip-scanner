@@ -20,10 +20,11 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.ui.UIViewModel
+import com.ticketflip.scanner.ui.app.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun ProfileScreen(UIViewModel: UIViewModel) {
+fun ProfileScreen(UIViewModel: UIViewModel, userViewModel: UserViewModel) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -44,14 +45,17 @@ fun ProfileScreen(UIViewModel: UIViewModel) {
                 .clip(CircleShape)
         )
         Text(
-            text = "Saif Rashed",
+            text = (userViewModel.userResource.value?.data?.firstName ?: "") + " " + (userViewModel.userResource.value?.data?.lastName
+                ?: ""),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
                 .padding(5.dp)
         )
-        Text(
-            text = "saifeddinerashed@icloud.com",
-        )
+        userViewModel.userResource.value?.data?.let {
+            Text(
+                text = it.userEmail,
+            )
+        }
 
         Button(
             onClick = {
