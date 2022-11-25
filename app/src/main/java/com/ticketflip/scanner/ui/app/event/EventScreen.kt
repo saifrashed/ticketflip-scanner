@@ -1,5 +1,8 @@
 package com.ticketflip.scanner.ui.app.event
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,9 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.hva.amsix.util.Constants
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
@@ -39,6 +44,7 @@ fun EventScreen(
 ) {
 
     val eventList by eventViewModel.eventResource.observeAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         userViewModel.token.let { eventViewModel.getEvents(it) }
@@ -68,7 +74,8 @@ fun EventScreen(
 
                                     Column(
                                         modifier = Modifier
-                                            .weight(1f).padding(0.dp, 10.dp),
+                                            .weight(1f)
+                                            .padding(0.dp, 10.dp),
                                         verticalArrangement = Arrangement.Center
                                     ) {
                                         eventList?.data?.get(index)?.let {
@@ -79,7 +86,8 @@ fun EventScreen(
                                         }
                                     }
                                     IconButton(
-                                        onClick = { /*TODO*/ },
+                                        onClick = { eventList?.data?.get(index)
+                                            ?.let { linkToWebpage(context, it.eventId) } },
                                         modifier = Modifier
                                             .clip(CircleShape)
                                             .background(Color.White)
@@ -182,4 +190,10 @@ fun EventScreen(
     }
 }
 
+fun linkToWebpage(context: Context, id: String) {
+//val context = ContextAmbient.current
+    val openURL = Intent(Intent.ACTION_VIEW)
+    openURL.data = Uri.parse(Constants.BASE_URL + "shop/event?id=" + id)
+    startActivity(context, openURL, null)
+}
 
