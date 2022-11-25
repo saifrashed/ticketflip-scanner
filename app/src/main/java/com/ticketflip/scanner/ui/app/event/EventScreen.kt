@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -25,6 +26,7 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.hva.amsix.util.Screen
+import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
 
@@ -39,108 +41,101 @@ fun EventScreen(
     val eventList by eventViewModel.eventResource.observeAsState()
 
     LaunchedEffect(key1 = true) {
-        userViewModel.token?.let { eventViewModel.getEvents(it) }
+        userViewModel.token.let { eventViewModel.getEvents(it) }
     }
 
-    LazyColumn {
-        items(eventList?.data?.size ?: 0) { index ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Card(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    onClick = { /* TODO */ }
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
+    when (eventList) {
+        is Resource.Success -> { // if read members is successfull we show it to the user.
+            LazyColumn {
+                items(eventList?.data?.size ?: 0) { index ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp)
+                        Card(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                            onClick = { /* TODO */ }
                         ) {
-
                             Column(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 0.dp, vertical = 4.dp),
-                                verticalArrangement = Arrangement.Center
+                                    .fillMaxWidth()
                             ) {
-                                eventList?.data?.get(index)?.let {
-                                    Text(
-                                        text = it.eventName,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                                Text(
-                                    text = "0 members",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                            IconButton(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Info,
-                                    contentDescription = "Favorite",
-                                )
-                            }
-                        }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(20.dp)
+                                ) {
 
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .memoryCachePolicy(CachePolicy.ENABLED)
-                                .data(eventList?.data?.get(index)?.eventImage ?: "")
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                        )
-
-                        Column(modifier = Modifier.padding(20.dp)) {
-
-                            Text(
-                                text = "Beschrijving",
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                            )
-
-                            Text(
-                                text =  eventList?.data?.get(index)?.eventDescription ?: "",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Button(
-                                    onClick = {
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(1f).padding(0.dp, 10.dp),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
                                         eventList?.data?.get(index)?.let {
-                                            Screen.EventScanScreen.withArgs(
-                                                it.eventId
-                                            )
-                                        }?.let {
-                                            UIViewModel.navigate(
-                                                it
+                                            Text(
+                                                text = it.eventName,
+                                                style = MaterialTheme.typography.bodyLarge
                                             )
                                         }
-                                    },
-                                    shape = RoundedCornerShape(50.dp),
+                                    }
+                                    IconButton(
+                                        onClick = { /*TODO*/ },
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .background(Color.White)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Info,
+                                            contentDescription = "Favorite",
+                                        )
+                                    }
+                                }
+
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .memoryCachePolicy(CachePolicy.ENABLED)
+                                        .data(eventList?.data?.get(index)?.eventImage ?: "")
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .height(50.dp)
-                                        .width(125.dp)
-                                ) {
-                                    Text(text = "Scannen")
+                                        .fillMaxWidth()
+                                        .height(150.dp)
+                                )
+
+                                Column(modifier = Modifier.padding(20.dp)) {
+
+                                    Text(
+                                        text = "Check-in: 7/120",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                                    )
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                eventList?.data?.get(index)?.let {
+                                                    Screen.EventScanScreen.withArgs(
+                                                        it.eventId
+                                                    )
+                                                }?.let {
+                                                    UIViewModel.navigate(
+                                                        it
+                                                    )
+                                                }
+                                            },
+                                            shape = RoundedCornerShape(50.dp),
+                                            modifier = Modifier
+                                                .height(50.dp)
+                                                .width(125.dp)
+                                        ) {
+                                            Text(text = "Scannen")
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -148,7 +143,43 @@ fun EventScreen(
                 }
             }
         }
-    }
+        is Resource.Loading -> {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+        }
+        is Resource.Error -> {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
 
+            }
+        }
+        is Resource.Empty -> {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator(
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+        }
+        else -> {
+
+        }
+    }
 }
+
 

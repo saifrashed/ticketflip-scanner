@@ -31,7 +31,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     /**
      *  data for token
      */
-    var token: String? = null
+    var token: String = ""
         private set
 
 
@@ -49,7 +49,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun setToken(token: String?) {
+    fun setToken(token: String) {
         this.token = token
     }
 
