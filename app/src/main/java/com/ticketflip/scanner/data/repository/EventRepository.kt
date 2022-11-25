@@ -24,4 +24,33 @@ class EventRepository(context: Application) {
 
         return Resource.Success(response)
     }
+
+
+    suspend fun getEventTicketCount(token: String, eventId: String): Resource<Int> {
+        val response = try {
+            Log.i("EventRepository", "SUCCESS")
+            withTimeout(5_000) {
+                apiClient.getEventTicketCount(token, eventId)
+            }
+        } catch (e: Exception) {
+            Log.e("EventRepository", e.message ?: "No exception message available")
+            return Resource.Error("An unknown error occured")
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun getEventCheckinCount(token: String, eventId: String): Resource<Int> {
+        val response = try {
+            Log.i("EventRepository", "SUCCESS")
+            withTimeout(5_000) {
+                apiClient.getEventCheckinCount(token, eventId)
+            }
+        } catch (e: Exception) {
+            Log.e("EventRepository", e.message ?: "No exception message available")
+            return Resource.Error("An unknown error occured")
+        }
+
+        return Resource.Success(response)
+    }
 }
