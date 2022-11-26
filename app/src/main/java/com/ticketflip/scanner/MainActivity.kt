@@ -20,6 +20,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -28,6 +29,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hva.amsix.util.Constants.EVENTS_ITEM
 import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
+import com.hva.amsix.util.SessionManager
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
@@ -98,9 +100,11 @@ private fun NavHost(
     userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     ) {
 
+    val sessionManager = SessionManager(LocalContext.current)
+
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = Screen.AccessScreen.route,
+        startDestination = if (sessionManager.fetchAuthToken()?.isBlank() == true) Screen.AccessScreen.route else Screen.EventScreen.route,
 
         ) {
 

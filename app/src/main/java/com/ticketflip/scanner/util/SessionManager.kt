@@ -26,6 +26,15 @@ class SessionManager(context: Context) {
     }
 
     /**
+     * Function to save auth token
+     */
+    fun clearAuthToken() {
+        val editor = prefs.edit()
+        editor.remove(USER_TOKEN)
+        editor.apply()
+    }
+
+    /**
      * Function to fetch auth token
      */
     fun fetchAuthToken(): String? {

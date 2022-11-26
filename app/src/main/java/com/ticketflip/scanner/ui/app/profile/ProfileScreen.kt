@@ -60,6 +60,7 @@ fun ProfileScreen(UIViewModel: UIViewModel, userViewModel: UserViewModel) {
 
         Button(
             onClick = {
+                userViewModel.clearToken()
                 UIViewModel.navigate(Screen.AccessScreen.route)
             },
             shape = RoundedCornerShape(50.dp),

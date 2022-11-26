@@ -45,5 +45,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         getUser()
     }
 
+    fun clearToken() {
+        sessionManager.clearAuthToken()
+    }
+
 
 }
