@@ -45,7 +45,8 @@ fun ProfileScreen(UIViewModel: UIViewModel, userViewModel: UserViewModel) {
                 .clip(CircleShape)
         )
         Text(
-            text = (userViewModel.userResource.value?.data?.firstName ?: "") + " " + (userViewModel.userResource.value?.data?.lastName
+            text = (userViewModel.userResource.value?.data?.firstName
+                ?: "") + " " + (userViewModel.userResource.value?.data?.lastName
                 ?: ""),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier

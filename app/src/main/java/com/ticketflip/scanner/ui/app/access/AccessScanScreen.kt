@@ -1,35 +1,20 @@
 package com.ticketflip.scanner.ui.app.access
 
 import android.Manifest
-import android.util.Log
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.common.util.concurrent.ListenableFuture
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
-import com.ticketflip.scanner.util.BarCodeAnalyser
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -50,7 +35,7 @@ fun AccessScanScreen(UIViewModel: UIViewModel, userViewModel: UserViewModel) {
         LaunchedEffect(key1 = true) {
             cameraPermissionState.launchPermissionRequest()
 
-            userViewModel.getUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjZhNzU2ZGRmY2FkNDVmNTMyYjJjNiIsImlhdCI6MTY2OTI5MjYyOH0.Tx2e-iS4aRuQ4L0pQpZmhUxT6eHIzNR83Zb3UcNGOls")
+            userViewModel.setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNjZhNzU2ZGRmY2FkNDVmNTMyYjJjNiIsImlhdCI6MTY2OTI5MjYyOH0.Tx2e-iS4aRuQ4L0pQpZmhUxT6eHIzNR83Zb3UcNGOls")
 
         }
 

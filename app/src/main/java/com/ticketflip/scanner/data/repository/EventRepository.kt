@@ -11,11 +11,11 @@ import kotlinx.coroutines.withTimeout
 class EventRepository(context: Application) {
     private val apiClient = ApiClient().getApiService(context)
 
-    suspend fun getEvents(token: String): Resource<List<EventResponse>> {
+    suspend fun getEvents(): Resource<List<EventResponse>> {
         val response = try {
             Log.i("EventRepository", "SUCCESS")
             withTimeout(5_000) {
-                apiClient.getEvents(token)
+                apiClient.getEvents()
             }
         } catch (e: Exception) {
             Log.e("EventRepository", e.message ?: "No exception message available")
@@ -26,11 +26,11 @@ class EventRepository(context: Application) {
     }
 
 
-    suspend fun getEventTicketCount(token: String, eventId: String): Resource<Int> {
+    suspend fun getEventTicketCount(eventId: String): Resource<Int> {
         val response = try {
             Log.i("EventRepository", "SUCCESS")
             withTimeout(5_000) {
-                apiClient.getEventTicketCount(token, eventId)
+                apiClient.getEventTicketCount(eventId)
             }
         } catch (e: Exception) {
             Log.e("EventRepository", e.message ?: "No exception message available")
@@ -40,11 +40,11 @@ class EventRepository(context: Application) {
         return Resource.Success(response)
     }
 
-    suspend fun getEventCheckinCount(token: String, eventId: String): Resource<Int> {
+    suspend fun getEventCheckinCount(eventId: String): Resource<Int> {
         val response = try {
             Log.i("EventRepository", "SUCCESS")
             withTimeout(5_000) {
-                apiClient.getEventCheckinCount(token, eventId)
+                apiClient.getEventCheckinCount(eventId)
             }
         } catch (e: Exception) {
             Log.e("EventRepository", e.message ?: "No exception message available")

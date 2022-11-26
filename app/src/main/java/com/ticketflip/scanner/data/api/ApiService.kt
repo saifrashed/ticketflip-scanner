@@ -14,21 +14,21 @@ interface ApiService {
      */
 
     @GET("/api/users/")
-    suspend fun getUser(@Header("x-auth-token") token: String): List<UserResponse>
+    suspend fun getUser(): List<UserResponse>
 
 
     /**
      * Event Routes
      */
     @GET("/api/events/active")
-    suspend fun getEvents(@Header("x-auth-token") token: String): List<EventResponse>
+    suspend fun getEvents(): List<EventResponse>
 
     @GET("/api/events/{eventId}/tickets")
-    suspend fun getEventTicketCount(@Header("x-auth-token") token: String, @Path("eventId") eventId: String): Int
+    suspend fun getEventTicketCount(@Path("eventId") eventId: String): Int
 
 
     @GET("/api/events/{eventId}/check-in")
-    suspend fun getEventCheckinCount(@Header("x-auth-token") token: String, @Path("eventId") eventId: String): Int
+    suspend fun getEventCheckinCount(@Path("eventId") eventId: String): Int
 
 
     /**

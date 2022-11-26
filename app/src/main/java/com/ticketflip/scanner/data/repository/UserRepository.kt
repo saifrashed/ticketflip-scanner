@@ -10,11 +10,11 @@ import kotlinx.coroutines.withTimeout
 class UserRepository(context: Application) {
     private val apiClient = ApiClient().getApiService(context)
 
-    suspend fun getUser(token: String): Resource<UserResponse> {
+    suspend fun getUser(): Resource<UserResponse> {
         val response = try {
             Log.i("UserRepository", "SUCCESS")
             withTimeout(5_000) {
-                apiClient.getUser(token).get(0)
+                apiClient.getUser().get(0)
             }
         } catch (e: Exception) {
             Log.e("UserRepository", e.message ?: "No exception message available")

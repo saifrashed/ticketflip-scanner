@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -46,9 +45,6 @@ fun EventScreen(
     val eventList by eventViewModel.eventResource.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        userViewModel.token.let { eventViewModel.getEvents(it) }
-    }
 
     when (eventList) {
         is Resource.Success -> { // if read members is successfull we show it to the user.
@@ -69,7 +65,7 @@ fun EventScreen(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(20.dp)
+                                        .padding(20.dp, 10.dp)
                                 ) {
 
                                     Column(
@@ -86,8 +82,10 @@ fun EventScreen(
                                         }
                                     }
                                     IconButton(
-                                        onClick = { eventList?.data?.get(index)
-                                            ?.let { linkToWebpage(context, it.eventId) } },
+                                        onClick = {
+                                            eventList?.data?.get(index)
+                                                ?.let { linkToWebpage(context, it.eventId) }
+                                        },
                                         modifier = Modifier
                                             .clip(CircleShape)
                                             .background(Color.White)

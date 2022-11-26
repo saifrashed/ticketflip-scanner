@@ -28,21 +28,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _userResource: MutableLiveData<Resource<UserResponse>> =
         MutableLiveData(Resource.Empty())
 
-    /**
-     *  data for token
-     */
-    var token: String = ""
-        private set
 
-
-
-    fun getUser(token: String) {
+    fun getUser() {
         _userResource.value = Resource.Loading()
 
         viewModelScope.launch {
-            val result = userRepository.getUser(token)
-
-            setToken(token)
+            val result = userRepository.getUser()
 
             _userResource.value = result
         }
@@ -50,9 +41,9 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun setToken(token: String) {
-        this.token = token
+        sessionManager.saveAuthToken(token)
+        getUser()
     }
-
 
 
 }
