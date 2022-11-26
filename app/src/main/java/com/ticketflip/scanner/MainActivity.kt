@@ -97,14 +97,19 @@ private fun NavHost(
     navController: NavHostController,
     UIViewModel: UIViewModel,
     scaffoldState: ScaffoldState,
-    userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    ) {
+) {
 
     val sessionManager = SessionManager(LocalContext.current)
+    var startDestination = Screen.AccessScreen.route
+
+    // check for an existing token and get the user if it exists.
+    if (sessionManager.fetchAuthToken()?.isNotBlank() == true) {
+        startDestination = Screen.EventScreen.route
+    }
 
     androidx.navigation.compose.NavHost(
         navController,
-        startDestination = if (sessionManager.fetchAuthToken()?.isBlank() == true) Screen.AccessScreen.route else Screen.EventScreen.route,
+        startDestination = startDestination,
 
         ) {
 
@@ -124,7 +129,7 @@ private fun NavHost(
                 UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
             ) {
-                AccessScanScreen(UIViewModel, userViewModel)
+                AccessScanScreen(UIViewModel)
             }
         }
 
@@ -136,7 +141,7 @@ private fun NavHost(
                 scaffoldState = scaffoldState,
                 showGoBack = false
             ) {
-                EventScreen(UIViewModel = UIViewModel, userViewModel)
+                EventScreen(UIViewModel = UIViewModel)
             }
         }
 
@@ -163,20 +168,11 @@ private fun NavHost(
                 scaffoldState = scaffoldState,
                 showGoBack = false
             ) {
-                ProfileScreen(UIViewModel = UIViewModel, userViewModel)
+                ProfileScreen(UIViewModel = UIViewModel)
             }
         }
         // the rest...
     }
-
-    val user by userViewModel.userResource.observeAsState()
-
-    when(user) {
-        is Resource.Success -> {
-            navController.navigate(Screen.EventScreen.route)
-        }
-    }
-
 }
 
 

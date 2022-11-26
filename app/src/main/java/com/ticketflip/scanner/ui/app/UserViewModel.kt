@@ -28,6 +28,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _userResource: MutableLiveData<Resource<UserResponse>> =
         MutableLiveData(Resource.Empty())
 
+    init {
+        viewModelScope.launch {
+            getUser()
+        }
+    }
 
     fun getUser() {
         _userResource.value = Resource.Loading()
