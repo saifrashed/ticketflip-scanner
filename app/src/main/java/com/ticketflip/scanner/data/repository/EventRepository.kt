@@ -22,7 +22,12 @@ class EventRepository(context: Application) {
             return Resource.Error("An unknown error occured")
         }
 
-        return Resource.Success(response)
+        if(response.isEmpty()) {
+            return Resource.Empty()
+        } else {
+            return Resource.Success(response)
+
+        }
     }
 
 

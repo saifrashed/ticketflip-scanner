@@ -118,33 +118,6 @@ fun ProfileScreen(
                     }
                 }
             }
-            is Resource.Empty -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Button(
-                            onClick = {
-                                userViewModel.clearToken()
-                                UIViewModel.navigate(Screen.AccessScreen.route)
-                            },
-                            shape = RoundedCornerShape(50.dp),
-                            modifier = Modifier
-                                .padding(0.dp, 25.dp)
-                                .height(50.dp)
-                                .width(200.dp)
-                        ) {
-                            Text(text = "Uitloggen")
-                        }
-                    }
-                }
-            }
             else -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
