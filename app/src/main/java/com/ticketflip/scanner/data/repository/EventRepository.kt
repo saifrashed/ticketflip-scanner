@@ -4,8 +4,9 @@ import android.app.Application
 import android.util.Log
 import com.ticketflip.scanner.data.api.ApiClient
 import com.ticketflip.scanner.data.api.util.Resource
+import com.ticketflip.scanner.data.model.request.ScanRequest
 import com.ticketflip.scanner.data.model.response.EventResponse
-import com.ticketflip.scanner.data.model.response.UserResponse
+import com.ticketflip.scanner.data.model.response.ScanResponse
 import kotlinx.coroutines.withTimeout
 
 class EventRepository(context: Application) {
@@ -22,7 +23,7 @@ class EventRepository(context: Application) {
             return Resource.Error("An unknown error occured")
         }
 
-        if(response.isEmpty()) {
+        if (response.isEmpty()) {
             return Resource.Empty()
         } else {
             return Resource.Success(response)
@@ -30,12 +31,11 @@ class EventRepository(context: Application) {
         }
     }
 
-
-    suspend fun getEventTicketCount(eventId: String): Resource<Int> {
+    suspend fun scan(eventId: String, ticketId: String): Resource<ScanResponse> {
         val response = try {
             Log.i("EventRepository", "SUCCESS")
             withTimeout(5_000) {
-                apiClient.getEventTicketCount(eventId)
+                apiClient.scan(ScanRequest(eventId, ticketId))
             }
         } catch (e: Exception) {
             Log.e("EventRepository", e.message ?: "No exception message available")
@@ -45,17 +45,4 @@ class EventRepository(context: Application) {
         return Resource.Success(response)
     }
 
-    suspend fun getEventCheckinCount(eventId: String): Resource<Int> {
-        val response = try {
-            Log.i("EventRepository", "SUCCESS")
-            withTimeout(5_000) {
-                apiClient.getEventCheckinCount(eventId)
-            }
-        } catch (e: Exception) {
-            Log.e("EventRepository", e.message ?: "No exception message available")
-            return Resource.Error("An unknown error occured")
-        }
-
-        return Resource.Success(response)
-    }
 }

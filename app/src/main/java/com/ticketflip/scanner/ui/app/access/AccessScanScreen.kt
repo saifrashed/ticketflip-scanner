@@ -9,12 +9,10 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -26,7 +24,6 @@ import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
-import com.ticketflip.scanner.ui.app.event.CameraPreview
 import com.ticketflip.scanner.util.BarCodeAnalyser
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -43,13 +40,10 @@ fun AccessScanScreen(
 
     val cameraPermissionState =
         rememberPermissionState(permission = Manifest.permission.CAMERA)
-
     val userResult by userViewModel.userResource.observeAsState()
-
 
     LaunchedEffect(key1 = true) {
         cameraPermissionState.launchPermissionRequest()
-
 //        userViewModel.setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjg5M2QzZTE2YWFlMDAxNjBlMTRmNyIsImlhdCI6MTY2OTQ1Njg1N30.6wvRw0SuYhSzN2xyalWtmF-APtOVllEcvem73xL4cs4")
     }
 
@@ -62,11 +56,8 @@ fun AccessScanScreen(
         }
     }
 
-
-        CameraPreview(userViewModel)
-
-    }
-
+    CameraPreview(userViewModel)
+}
 
 
 @Composable

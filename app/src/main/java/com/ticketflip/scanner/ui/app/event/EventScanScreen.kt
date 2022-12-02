@@ -3,7 +3,6 @@ package com.ticketflip.scanner.ui.app.event
 import android.Manifest
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +23,8 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.common.util.concurrent.ListenableFuture
+import com.ticketflip.scanner.data.api.util.Resource
+import com.ticketflip.scanner.data.model.response.ScanResponse
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.util.BarCodeAnalyser
 import java.util.concurrent.ExecutorService
@@ -33,26 +35,45 @@ import java.util.concurrent.Executors
     ExperimentalPermissionsApi::class
 )
 @Composable
-fun EventScanScreen(UIViewModel: UIViewModel, eventId: String) {
+fun EventScanScreen(
+    UIViewModel: UIViewModel,
+    eventId: String,
+    eventViewModel: EventViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val scanResult by eventViewModel.scanResource.observeAsState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val cameraPermissionState =
             rememberPermissionState(permission = Manifest.permission.CAMERA)
 
-
         LaunchedEffect(key1 = true) {
             cameraPermissionState.launchPermissionRequest()
+//            eventViewModel.scan(eventId, "638a26d3d98ad7258a4ace80")
         }
 
 
-        CameraPreview()
+        when (scanResult) {
+            is Resource.Success -> {
+                (scanResult as Resource.Success<ScanResponse>).data?.let {
+                    UIViewModel.showSnackbar(
+                        it.message
+                    )
+                }
+            }
+            is Resource.Error -> {
+                UIViewModel.showSnackbar("Er is iets misgegaan")
+            }
+        }
+
+        CameraPreview(eventViewModel, eventId)
     }
 }
 
 
 @Composable
-fun CameraPreview() {
+fun CameraPreview(eventViewModel: EventViewModel, eventId: String) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
@@ -88,7 +109,9 @@ fun CameraPreview() {
                     barcodes.forEach { barcode ->
                         barcode.rawValue?.let { barcodeValue ->
                             barCodeVal.value = barcodeValue
-                            Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+
+                            eventViewModel.scan(eventId, barcodeValue)
+
                         }
                     }
                 }

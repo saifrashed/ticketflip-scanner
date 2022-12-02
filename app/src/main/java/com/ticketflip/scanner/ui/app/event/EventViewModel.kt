@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.data.model.response.EventResponse
+import com.ticketflip.scanner.data.model.response.ScanResponse
 import com.ticketflip.scanner.data.repository.EventRepository
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,15 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         MutableLiveData(Resource.Empty())
 
 
+    /**
+     * Live data for scanResult
+     */
+    val scanResource: LiveData<Resource<ScanResponse>>
+        get() = _scanResource
+
+    private val _scanResource: MutableLiveData<Resource<ScanResponse>> =
+        MutableLiveData(Resource.Empty())
+
     init {
         viewModelScope.launch { getEvents() }
     }
@@ -41,5 +51,13 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun scan(eventId: String, ticketId: String) {
+        _scanResource.value = Resource.Loading()
 
+        viewModelScope.launch {
+            val result = eventRepository.scan(eventId, ticketId)
+
+            _scanResource.value = result
+        }
+    }
 }

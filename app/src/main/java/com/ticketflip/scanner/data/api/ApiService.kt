@@ -1,9 +1,15 @@
 package  com.ticketflip.scanner.data.api
 
+import com.ticketflip.scanner.data.model.request.ScanRequest
 import com.ticketflip.scanner.data.model.response.EventResponse
+import com.ticketflip.scanner.data.model.response.ScanResponse
 import com.ticketflip.scanner.data.model.response.UserResponse
+import kotlinx.coroutines.Deferred
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 
@@ -12,10 +18,8 @@ interface ApiService {
     /**
      * User Routes
      */
-
     @GET("/api/users/")
     suspend fun getUser(): List<UserResponse>
-
 
     /**
      * Event Routes
@@ -23,16 +27,10 @@ interface ApiService {
     @GET("/api/events/active")
     suspend fun getEvents(): List<EventResponse>
 
-    @GET("/api/events/{eventId}/tickets")
-    suspend fun getEventTicketCount(@Path("eventId") eventId: String): Int
-
-
-    @GET("/api/events/{eventId}/check-in")
-    suspend fun getEventCheckinCount(@Path("eventId") eventId: String): Int
-
-
     /**
      * Scan Routes
      */
+    @POST("/api/tickets/scan")
+    suspend fun scan(@Body body: ScanRequest): ScanResponse
 
 }

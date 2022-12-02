@@ -124,7 +124,7 @@ fun EventScreen(
                                     Column(modifier = Modifier.padding(20.dp)) {
 
                                         Text(
-                                            text = "Check-in: 7/120",
+                                            text = "Check-in: 0/0",
                                             style = MaterialTheme.typography.bodyMedium,
                                             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
                                         )
