@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -77,7 +78,8 @@ fun AccessScanScreen(
                 modifier = Modifier.fillMaxSize(),
                 width = 200.dp,
                 height = 200.dp,
-                offsetY = 150.dp
+                offsetY = 150.dp,
+                color = Color(0x77000000)
             )
         }
         CameraPreview(userViewModel)
@@ -121,7 +123,7 @@ fun CameraPreview(userViewModel: UserViewModel) {
                     barcodes.forEach { barcode ->
                         barcode.rawValue?.let { barcodeValue ->
                             barCodeVal.value = barcodeValue
-                            Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
 
                             userViewModel.setToken(barcodeValue)
                         }

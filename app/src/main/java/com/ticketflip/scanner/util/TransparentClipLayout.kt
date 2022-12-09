@@ -11,12 +11,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 
+
+// black - 0x77000000
+// green - 0x5000ff00
+// red - 0x50ff0000
+
 @Composable
 fun TransparentClipLayout(
     modifier: Modifier,
     width: Dp,
     height: Dp,
-    offsetY: Dp
+    offsetY: Dp,
+    color: Color
 ) {
 
     val offsetInPx: Float
@@ -37,7 +43,7 @@ fun TransparentClipLayout(
             val checkPoint = saveLayer(null, null)
 
             // Destination
-            drawRect(Color(0x77000000))
+            drawRect(color)
 
             // Source
             drawRoundRect(

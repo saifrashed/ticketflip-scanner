@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ScanResponse(
     @SerializedName("isValid")
-    var isValid: String,
+    var isValid: Boolean,
 
     @SerializedName("message")
     var message: String,
