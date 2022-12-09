@@ -9,13 +9,21 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -25,8 +33,10 @@ import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
 import com.ticketflip.scanner.util.BarCodeAnalyser
+import com.ticketflip.scanner.util.TransparentClipLayout
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -56,7 +66,22 @@ fun AccessScanScreen(
         }
     }
 
-    CameraPreview(userViewModel)
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(100F)
+        ) {
+            TransparentClipLayout(
+                modifier = Modifier.fillMaxSize(),
+                width = 200.dp,
+                height = 200.dp,
+                offsetY = 150.dp
+            )
+        }
+        CameraPreview(userViewModel)
+    }
 }
 
 
@@ -67,8 +92,6 @@ fun CameraPreview(userViewModel: UserViewModel) {
     var preview by remember { mutableStateOf<androidx.camera.core.Preview?>(null) }
     val barCodeVal = remember { mutableStateOf("") }
 
-
-
     AndroidView(
         factory = { AndroidViewContext ->
             PreviewView(AndroidViewContext).apply {
@@ -77,10 +100,10 @@ fun CameraPreview(userViewModel: UserViewModel) {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
                 )
+
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
             }
         },
-
         update = { previewView ->
             val cameraSelector: CameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -126,4 +149,7 @@ fun CameraPreview(userViewModel: UserViewModel) {
         }
     )
 }
+
+
+
 
