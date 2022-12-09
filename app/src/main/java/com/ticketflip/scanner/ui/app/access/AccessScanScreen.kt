@@ -1,25 +1,25 @@
 package com.ticketflip.scanner.ui.app.access
 
 import android.Manifest
-import android.util.Log
-import android.view.ViewGroup
-import android.widget.Toast
+import android.util.Size
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -28,15 +28,12 @@ import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.common.util.concurrent.ListenableFuture
 import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.ui.app.UserViewModel
-import com.ticketflip.scanner.util.BarCodeAnalyser
+import com.ticketflip.scanner.util.QrCodeAnalyzer
 import com.ticketflip.scanner.util.TransparentClipLayout
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 
 @OptIn(
@@ -91,63 +88,37 @@ fun AccessScanScreen(
 fun CameraPreview(userViewModel: UserViewModel) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var preview by remember { mutableStateOf<androidx.camera.core.Preview?>(null) }
-    val barCodeVal = remember { mutableStateOf("") }
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
     AndroidView(
-        factory = { AndroidViewContext ->
-            PreviewView(AndroidViewContext).apply {
-                this.scaleType = PreviewView.ScaleType.FILL_CENTER
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                )
-
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-            }
-        },
-        update = { previewView ->
-            val cameraSelector: CameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        factory = { context ->
+            val previewView = PreviewView(context)
+            val preview = Preview.Builder().build()
+            val selector = CameraSelector.Builder()
+                .requireLensFacing(LENS_FACING_BACK)
                 .build()
-            val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-            val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
-                ProcessCameraProvider.getInstance(context)
-
-            cameraProviderFuture.addListener({
-                preview = Preview.Builder().build().also {
-                    it.setSurfaceProvider(previewView.surfaceProvider)
+            preview.setSurfaceProvider(previewView.surfaceProvider)
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(previewView.width, previewView.height))
+                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+            imageAnalysis.setAnalyzer(
+                ContextCompat.getMainExecutor(context),
+                QrCodeAnalyzer { result ->
+                    userViewModel.setToken(result)
                 }
-                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-                val barcodeAnalyser = BarCodeAnalyser { barcodes ->
-                    barcodes.forEach { barcode ->
-                        barcode.rawValue?.let { barcodeValue ->
-                            barCodeVal.value = barcodeValue
-//                            Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
-
-                            userViewModel.setToken(barcodeValue)
-                        }
-                    }
-                }
-                val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                    .also {
-                        it.setAnalyzer(cameraExecutor, barcodeAnalyser)
-                    }
-
-                try {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageAnalysis
-                    )
-                } catch (e: Exception) {
-                    Log.d("TAG", "CameraPreview: ${e.localizedMessage}")
-                }
-            }, ContextCompat.getMainExecutor(context))
+            )
+            try {
+                cameraProviderFuture.get().bindToLifecycle(
+                    lifecycleOwner,
+                    selector,
+                    preview,
+                    imageAnalysis
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            previewView
         }
     )
 }

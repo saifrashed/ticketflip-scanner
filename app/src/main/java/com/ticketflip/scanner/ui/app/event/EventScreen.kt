@@ -35,12 +35,15 @@ import com.hva.amsix.util.Screen
 import com.ticketflip.scanner.R
 import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
-import com.ticketflip.scanner.ui.app.UserViewModel
 import com.ticketflip.scanner.util.ConnectionState
 import com.ticketflip.scanner.util.connectivityState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
     ExperimentalCoroutinesApi::class
 )
 @Composable
@@ -123,11 +126,13 @@ fun EventScreen(
 
                                     Column(modifier = Modifier.padding(20.dp)) {
 
-                                        Text(
-                                            text = "Check-in: 0/0",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
-                                        )
+                                        eventList?.data?.get(index)?.eventDescription?.let {
+                                            Text(
+                                                text = it,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                                            )
+                                        }
 
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
@@ -235,4 +240,3 @@ fun linkToWebpage(context: Context, id: String) {
     openURL.data = Uri.parse(Constants.BASE_URL + "shop/event?id=" + id)
     startActivity(context, openURL, null)
 }
-

@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,9 +29,7 @@ import com.hva.amsix.util.Constants.EVENTS_ITEM
 import com.hva.amsix.util.Constants.PROFILE_ITEM
 import com.hva.amsix.util.Screen
 import com.hva.amsix.util.SessionManager
-import com.ticketflip.scanner.data.api.util.Resource
 import com.ticketflip.scanner.ui.UIViewModel
-import com.ticketflip.scanner.ui.app.UserViewModel
 import com.ticketflip.scanner.ui.app.access.AccessScanScreen
 import com.ticketflip.scanner.ui.app.access.AccessScreen
 import com.ticketflip.scanner.ui.app.event.EventScanScreen
