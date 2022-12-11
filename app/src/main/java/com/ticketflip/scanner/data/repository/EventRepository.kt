@@ -9,6 +9,7 @@ import com.ticketflip.scanner.data.model.response.EventResponse
 import com.ticketflip.scanner.data.model.response.ScanResponse
 import kotlinx.coroutines.withTimeout
 
+
 class EventRepository(context: Application) {
     private val apiClient = ApiClient().getApiService(context)
 

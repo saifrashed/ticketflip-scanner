@@ -2,6 +2,10 @@ package com.ticketflip.scanner.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * User Response
+ * A GSON Response body for a user.
+ */
 data class UserResponse(
     @SerializedName("_id")
     var userId: String,

@@ -2,6 +2,10 @@ package com.ticketflip.scanner.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Event Response
+ * The GSON response body for a single event.
+ */
 data class EventResponse(
     @SerializedName("_id")
     var eventId: String,

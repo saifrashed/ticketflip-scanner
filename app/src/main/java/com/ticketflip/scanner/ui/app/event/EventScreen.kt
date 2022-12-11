@@ -22,9 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
@@ -54,9 +58,7 @@ fun EventScreen(
 
     val eventList by eventViewModel.eventResource.observeAsState()
     val context = LocalContext.current
-
     val connection by connectivityState()
-
     val isConnected = connection === ConnectionState.Available
 
     if (isConnected) {
@@ -70,7 +72,7 @@ fun EventScreen(
                         ) {
                             Card(
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                                onClick = { /* TODO */ }
+                                elevation = 0.dp
                             ) {
                                 Column(
                                     modifier = Modifier
@@ -91,6 +93,7 @@ fun EventScreen(
                                             eventList?.data?.get(index)?.let {
                                                 Text(
                                                     text = it.eventName,
+                                                    fontWeight = FontWeight.Bold,
                                                     style = MaterialTheme.typography.bodyLarge
                                                 )
                                             }
@@ -155,7 +158,7 @@ fun EventScreen(
                                                     .height(50.dp)
                                                     .width(125.dp)
                                             ) {
-                                                Text(text = "Scannen")
+                                                Text(text = stringResource(R.string.scan))
                                             }
                                         }
                                     }
@@ -197,10 +200,10 @@ fun EventScreen(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_baseline_event_busy_24),
-                        contentDescription = "GEEN AANKOMENDE EVENEMENTEN"
+                        contentDescription = stringResource(R.string.no_upcoming_events)
                     )
                     Text(
-                        text = "GEEN AANKOMENDE EVENEMENTEN",
+                        text = stringResource(R.string.no_upcoming_events),
                     )
                 }
             }
@@ -225,10 +228,10 @@ fun EventScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_signal_wifi_off_24),
-                contentDescription = "GEEN INTERNET VERBINDING"
+                contentDescription = stringResource(R.string.no_internet_connection)
             )
             Text(
-                text = "GEEN INTERNET VERBINDING",
+                text = stringResource(R.string.no_internet_connection),
             )
         }
     }

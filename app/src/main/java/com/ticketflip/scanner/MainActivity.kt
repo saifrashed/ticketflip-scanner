@@ -20,6 +20,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -133,7 +135,7 @@ private fun NavHost(
         // Event screen
         composable(Screen.EventScreen.route) {
             AppShell(
-                title = "Evenementen",
+                title = stringResource(R.string.event),
                 UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
                 showGoBack = false
@@ -160,7 +162,7 @@ private fun NavHost(
         // Profile screen
         composable(Screen.ProfileScreen.route) {
             AppShell(
-                title = "Profiel",
+                title = stringResource(R.string.profile),
                 UIViewModel = UIViewModel,
                 scaffoldState = scaffoldState,
                 showGoBack = false
@@ -168,7 +170,6 @@ private fun NavHost(
                 ProfileScreen(UIViewModel = UIViewModel)
             }
         }
-        // the rest...
     }
 }
 
@@ -192,7 +193,8 @@ fun AppShell(
                     Text(
                         title,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
@@ -200,7 +202,7 @@ fun AppShell(
                         IconButton(onClick = { UIViewModel.goBack(true) }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Go Back"
+                                contentDescription = stringResource(R.string.go_back)
                             )
                         }
                     }
@@ -215,7 +217,7 @@ fun AppShell(
         bottomBar = {
             NavigationBar(modifier = Modifier.fillMaxWidth(), containerColor = Color.White) {
                 NavigationBarItem(
-                    label = { Text("Evenementen") },
+                    label = { Text(stringResource(R.string.event)) },
                     selected = UIViewModel.bottomNavIndex.collectAsState().value == EVENTS_ITEM,
                     onClick = {
                         UIViewModel.clickBottomNavItem(EVENTS_ITEM)
@@ -224,7 +226,7 @@ fun AppShell(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Home,
-                            contentDescription = "Evenementen"
+                            contentDescription = stringResource(R.string.event)
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
@@ -234,7 +236,7 @@ fun AppShell(
                     )
                 )
                 NavigationBarItem(
-                    label = { Text("Profiel") },
+                    label = { Text(stringResource(R.string.profile)) },
                     selected = UIViewModel.bottomNavIndex.collectAsState().value == PROFILE_ITEM,
                     onClick = {
                         UIViewModel.clickBottomNavItem(PROFILE_ITEM)
@@ -243,7 +245,7 @@ fun AppShell(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = "Profiel"
+                            contentDescription = stringResource(R.string.profile)
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
@@ -278,7 +280,7 @@ fun AppShellScanner(
                     IconButton(onClick = { UIViewModel.goBack(true) }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Go Back"
+                            contentDescription = stringResource(R.string.go_back)
                         )
                     }
                 },
