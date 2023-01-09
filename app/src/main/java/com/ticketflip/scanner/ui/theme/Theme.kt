@@ -15,7 +15,7 @@ private val colorScheme = lightColorScheme(
 fun TicketflipscannerTheme(
     content: @Composable () -> Unit
 ) {
-    val colorScheme = colorScheme;
+    val colorScheme = colorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

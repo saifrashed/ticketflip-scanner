@@ -7,4 +7,5 @@
     <string name="no_upcoming_events">GEEN AANKOMENDE EVENEMENTEN</string>
     <string name="no_internet_connection">GEEN INTERNET VERBINDING</string>
     <string name="scan">Scannen</string>
+    <string name="rescan">Rescan</string>
 </resources>

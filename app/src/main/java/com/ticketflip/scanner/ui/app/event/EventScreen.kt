@@ -22,13 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
@@ -42,9 +40,6 @@ import com.ticketflip.scanner.ui.UIViewModel
 import com.ticketflip.scanner.util.ConnectionState
 import com.ticketflip.scanner.util.connectivityState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -133,7 +128,10 @@ fun EventScreen(
                                             Text(
                                                 text = it,
                                                 style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                                                modifier = Modifier.padding(
+                                                    top = 12.dp,
+                                                    bottom = 8.dp
+                                                ),
                                             )
                                         }
 

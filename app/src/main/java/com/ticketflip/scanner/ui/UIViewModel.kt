@@ -36,6 +36,12 @@ class UIViewModel : ViewModel() {
         }
     }
 
+    fun ShowToast(message: String) {
+        viewModelScope.launch {
+            _sharedFlow.emit(UIEvents.ShowToast(message))
+        }
+    }
+
 
     fun clickBottomNavItem(index: Int) {
         viewModelScope.launch {
@@ -46,6 +52,7 @@ class UIViewModel : ViewModel() {
 
     sealed class UIEvents {
         data class ShowSnackbar(val message: String) : UIEvents()
+        data class ShowToast(val message: String) : UIEvents()
         data class Navigate(val route: String) : UIEvents()
         data class GoBack(val activated: Boolean) : UIEvents()
         data class ClickBottomNavItem(val index: Int) : UIEvents()

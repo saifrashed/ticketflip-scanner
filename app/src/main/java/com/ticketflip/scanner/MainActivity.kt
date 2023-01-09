@@ -1,6 +1,7 @@
 package com.ticketflip.scanner
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -66,6 +67,7 @@ fun TicketflipScannerApp(UIViewModel: UIViewModel = androidx.lifecycle.viewmodel
     val navController = rememberNavController()
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     NavHost(navController, UIViewModel, scaffoldState)
 
@@ -77,6 +79,16 @@ fun TicketflipScannerApp(UIViewModel: UIViewModel = androidx.lifecycle.viewmodel
                         scaffoldState.snackbarHostState.showSnackbar(
                             event.message,
                         )
+                    }
+                }
+
+                is UIViewModel.UIEvents.ShowToast -> {
+                    scope.launch {
+                        Toast.makeText(
+                            context,
+                            event.message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 }
                 is UIViewModel.UIEvents.Navigate -> {
@@ -124,12 +136,7 @@ private fun NavHost(
 
         // Scan Access screen
         composable(Screen.AccessScanScreen.route) {
-            AppShellScanner(
-                UIViewModel = UIViewModel,
-                scaffoldState = scaffoldState,
-            ) {
-                AccessScanScreen(UIViewModel)
-            }
+            AccessScanScreen(scaffoldState, UIViewModel)
         }
 
         // Event screen
@@ -150,12 +157,7 @@ private fun NavHost(
             val eventId = navBackStackEntry.arguments?.getString("eventId")
             /* We check if is null */
             eventId?.let {
-                AppShellScanner(
-                    UIViewModel = UIViewModel,
-                    scaffoldState = scaffoldState,
-                ) {
-                    EventScanScreen(UIViewModel = UIViewModel, eventId = eventId)
-                }
+                EventScanScreen(scaffoldState, UIViewModel = UIViewModel, eventId = eventId)
             }
         }
 
@@ -256,39 +258,5 @@ fun AppShell(
                 )
             }
         }
-    ) { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) { content() } }
-}
-
-
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun AppShellScanner(
-    UIViewModel: UIViewModel,
-    scaffoldState: ScaffoldState,
-    content: @Composable() () -> Unit
-) {
-
-    Scaffold(
-        backgroundColor = MaterialTheme.colorScheme.background,
-        scaffoldState = scaffoldState,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-
-                },
-                navigationIcon = {
-                    IconButton(onClick = { UIViewModel.goBack(true) }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.go_back)
-                        )
-                    }
-                },
-                modifier = Modifier.background(Color.White),
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
-                )
-            )
-        },
     ) { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) { content() } }
 }

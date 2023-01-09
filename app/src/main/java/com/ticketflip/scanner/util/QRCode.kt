@@ -1,23 +1,30 @@
 package com.ticketflip.scanner.util
 
 import android.graphics.ImageFormat
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import java.nio.ByteBuffer
 
-class QrCodeAnalyzer(private val onQrCodeScanned: (String) -> Unit) : ImageAnalysis.Analyzer {
+class QRCode(
+    private val onQrCodeScanned: (String) -> Unit,
+) : ImageAnalysis.Analyzer {
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private val supportedImageFormats = listOf(
         ImageFormat.YUV_420_888,
         ImageFormat.YUV_422_888,
         ImageFormat.YUV_444_888
     )
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun analyze(image: ImageProxy) {
         if (image.format in supportedImageFormats) {
             val bytes = image.planes.first().buffer.toByteArray()
+
             val source = PlanarYUVLuminanceSource(
                 bytes,
                 image.width,
@@ -54,21 +61,8 @@ class QrCodeAnalyzer(private val onQrCodeScanned: (String) -> Unit) : ImageAnaly
             get(it)
         }
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
